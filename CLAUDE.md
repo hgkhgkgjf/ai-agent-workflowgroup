@@ -9,7 +9,7 @@ aiGroup is a **dual-harness AI team collaboration framework** (Claude Code + Cod
 | 目录 | 内容 |
 |------|------|
 | `agents/` | Agent 源池（开发态分发位置，由 `aigroup init` 选装到 `.claude/agents/`） |
-| `skills/` | Skill 源池（扁平 `skills/<name>/SKILL.md`） |
+| `skills/` | Skill 源池（按分类分组 `skills/<category>/<name>/SKILL.md`，分类含 workflow/product/frontend/backend/database/java/python/javascript/go-rust-cpp/dotnet/swift/php/ruby/infra/ai-ml/quality；`aigroup init` 安装时扁平化到目标项目 `.claude/skills/<name>/` 以保留原 skill ID） |
 | `docs/` | 知识库主源 |
 | `manifests/` | 安装清单（agent / skill 分组定义） |
 | `.orchestration/<session>/` | Agent 协作产物工作区（按 session/worker 三件套） |

@@ -69,7 +69,7 @@
 
 ## 关联
 
-- `skills/entropy-management/SKILL.md` — 执行流程
+- `skills/workflow/entropy-management/SKILL.md` — 执行流程
 - `agents/refactor-cleaner.md` — 死代码与重复清理
 - `docs/red-flags.md` 信号 #8 / #9 — 反复问题与文档漂移
 - `scripts/hooks/checks/` — 自动化传感器套件

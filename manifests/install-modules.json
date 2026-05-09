@@ -1,30 +1,34 @@
 {
-  "version": 3,
-  "description": "aiGroup 安装清单：agent / skill / commands 模块分组。skill 物理扁平在 skills/<name>/，自动加载；agent 源池在 agents/<name>.md，由 aigroup init 按需选装到 .claude/agents/。模块分类供跨平台插件消费。",
+  "version": 4,
+  "description": "aiGroup 安装清单：skill 模块按物理分类细粒度暴露，CLI 安装时可独立勾选（如只装 java/python/quality）。skill 源端按 skills/<category>/<name>/ 组织，aigroup init 安装时扁平化到目标 .claude/skills/<name>/ 以保留原 skill ID。agent 源池在 agents/<name>.md，由 aigroup init 按需选装到 .claude/agents/。",
+  "legacyModuleMap": {
+    "design": ["frontend"],
+    "engineering-core": ["backend", "database"],
+    "engineering-languages": ["java", "python", "javascript", "go-rust-cpp", "dotnet", "swift", "php", "ruby"],
+    "engineering-infra": ["infra", "ai-ml"]
+  },
   "modules": [
     {
       "id": "workflow",
       "kind": "skills",
-      "description": "跨阶段工作流 skill — 需求工程、规划、调试、审查、worktree、文档、验证、收尾。",
+      "category": "process",
+      "description": "工作流 skill — 需求工程、规划、调试、审查、worktree、文档、验证、收尾、熵管理。",
       "paths": [
-        "skills/requirement-engineering",
-        "skills/brainstorming",
-        "skills/writing-plans",
-        "skills/executing-plans",
-        "skills/using-git-worktrees",
-        "skills/systematic-debugging",
-        "skills/requesting-code-review",
-        "skills/receiving-code-review",
-        "skills/documentation",
-        "skills/verification-before-completion",
-        "skills/finishing-a-development-branch",
-        "skills/writing-skills",
-        "skills/entropy-management"
+        "skills/workflow/requirement-engineering",
+        "skills/workflow/brainstorming",
+        "skills/workflow/writing-plans",
+        "skills/workflow/executing-plans",
+        "skills/workflow/using-git-worktrees",
+        "skills/workflow/systematic-debugging",
+        "skills/workflow/requesting-code-review",
+        "skills/workflow/receiving-code-review",
+        "skills/workflow/documentation",
+        "skills/workflow/verification-before-completion",
+        "skills/workflow/finishing-a-development-branch",
+        "skills/workflow/writing-skills",
+        "skills/workflow/entropy-management"
       ],
-      "targets": [
-        "claude",
-        "codex"
-      ],
+      "targets": ["claude", "codex"],
       "defaultInstall": true,
       "cost": "light",
       "stability": "stable"
@@ -32,128 +36,226 @@
     {
       "id": "product",
       "kind": "skills",
-      "description": "产品管理辅助 skill — PRD、用户研究、竞品、干系人沟通。",
+      "category": "process",
+      "description": "产品管理辅助 skill — PRD、用户研究、竞品、干系人沟通、会议纪要。",
       "paths": [
-        "skills/competitive-analysis",
-        "skills/meeting-notes",
-        "skills/prd-template",
-        "skills/stakeholder-update",
-        "skills/user-research-synthesis"
+        "skills/product/competitive-analysis",
+        "skills/product/meeting-notes",
+        "skills/product/prd-template",
+        "skills/product/stakeholder-update",
+        "skills/product/user-research-synthesis"
       ],
-      "targets": [
-        "claude",
-        "codex"
-      ],
+      "targets": ["claude", "codex"],
       "defaultInstall": false,
       "cost": "light",
       "stability": "stable"
     },
     {
-      "id": "design",
+      "id": "frontend",
       "kind": "skills",
-      "description": "UI/UX 和前端实现 skill — 设计规范、组件、框架专项。",
+      "category": "stack",
+      "description": "前端/UI/UX skill — React/Vue/Angular/Next/Flutter/RN + UI/UX + 设计命令。",
       "paths": [
-        "skills/ui-ux-pro-max",
-        "skills/senior-frontend",
-        "skills/react-expert",
-        "skills/vue-expert",
-        "skills/vue-expert-js",
-        "skills/angular-architect",
-        "skills/nextjs-developer",
-        "skills/flutter-expert",
-        "skills/react-native-expert",
-        "skills/design-commands"
+        "skills/frontend/ui-ux-pro-max",
+        "skills/frontend/senior-frontend",
+        "skills/frontend/react-expert",
+        "skills/frontend/vue-expert",
+        "skills/frontend/vue-expert-js",
+        "skills/frontend/angular-architect",
+        "skills/frontend/nextjs-developer",
+        "skills/frontend/flutter-expert",
+        "skills/frontend/react-native-expert",
+        "skills/frontend/design-commands"
       ],
-      "targets": [
-        "claude",
-        "codex"
-      ],
+      "targets": ["claude", "codex"],
       "defaultInstall": false,
       "cost": "medium",
       "stability": "stable"
     },
     {
-      "id": "engineering-core",
+      "id": "backend",
       "kind": "skills",
-      "description": "后端核心 skill — API、架构、数据库、调试。任何后端任务的基线。",
+      "category": "stack",
+      "description": "后端核心 skill — API 设计、架构、微服务、GraphQL、调试、重构、全栈守护。任何后端任务的基线。",
       "paths": [
-        "skills/api-designer",
-        "skills/architecture-designer",
-        "skills/microservices-architect",
-        "skills/graphql-architect",
-        "skills/database-optimizer",
-        "skills/postgres-pro",
-        "skills/sql-pro",
-        "skills/debugging-wizard",
-        "skills/legacy-modernizer",
-        "skills/fullstack-guardian",
-        "skills/feature-forge",
-        "skills/code-documenter"
+        "skills/backend/api-designer",
+        "skills/backend/architecture-designer",
+        "skills/backend/microservices-architect",
+        "skills/backend/graphql-architect",
+        "skills/backend/debugging-wizard",
+        "skills/backend/legacy-modernizer",
+        "skills/backend/fullstack-guardian",
+        "skills/backend/feature-forge",
+        "skills/backend/code-documenter"
       ],
-      "targets": [
-        "claude",
-        "codex"
-      ],
+      "targets": ["claude", "codex"],
       "defaultInstall": true,
       "cost": "medium",
       "stability": "stable"
     },
     {
-      "id": "engineering-languages",
+      "id": "database",
       "kind": "skills",
-      "description": "语言/栈专项 skill — 按项目栈按需加载，不默认全装。",
+      "category": "stack",
+      "description": "数据库 skill — SQL 优化、Postgres 专项、数据库优化器。",
       "paths": [
-        "skills/typescript-pro",
-        "skills/javascript-pro",
-        "skills/nestjs-expert",
-        "skills/python-pro",
-        "skills/fastapi-expert",
-        "skills/django-expert",
-        "skills/pandas-pro",
-        "skills/golang-pro",
-        "skills/rust-engineer",
-        "skills/cpp-pro",
-        "skills/java-architect",
-        "skills/spring-boot-engineer",
-        "skills/kotlin-specialist",
-        "skills/swift-expert",
-        "skills/php-pro",
-        "skills/laravel-specialist",
-        "skills/rails-expert",
-        "skills/csharp-developer",
-        "skills/dotnet-core-expert"
+        "skills/database/database-optimizer",
+        "skills/database/postgres-pro",
+        "skills/database/sql-pro"
       ],
-      "targets": [
-        "claude",
-        "codex"
-      ],
-      "defaultInstall": false,
-      "cost": "heavy",
+      "targets": ["claude", "codex"],
+      "defaultInstall": true,
+      "cost": "light",
       "stability": "stable"
     },
     {
-      "id": "engineering-infra",
+      "id": "java",
       "kind": "skills",
-      "description": "基础设施、DevOps、云、CLI、AI/ML 工程 skill。",
+      "category": "language",
+      "description": "Java 生态 — Java 架构、Spring Boot、Kotlin。",
       "paths": [
-        "skills/devops-engineer",
-        "skills/sre-engineer",
-        "skills/cloud-architect",
-        "skills/kubernetes-specialist",
-        "skills/terraform-engineer",
-        "skills/cli-developer",
-        "skills/mcp-developer",
-        "skills/websocket-engineer",
-        "skills/monitoring-expert",
-        "skills/ml-pipeline",
-        "skills/fine-tuning-expert",
-        "skills/rag-architect",
-        "skills/spark-engineer"
+        "skills/java/java-architect",
+        "skills/java/spring-boot-engineer",
+        "skills/java/kotlin-specialist"
       ],
-      "targets": [
-        "claude",
-        "codex"
+      "targets": ["claude", "codex"],
+      "defaultInstall": false,
+      "cost": "medium",
+      "stability": "stable"
+    },
+    {
+      "id": "python",
+      "kind": "skills",
+      "category": "language",
+      "description": "Python 生态 — Python、FastAPI、Django、Pandas。",
+      "paths": [
+        "skills/python/python-pro",
+        "skills/python/fastapi-expert",
+        "skills/python/django-expert",
+        "skills/python/pandas-pro"
       ],
+      "targets": ["claude", "codex"],
+      "defaultInstall": false,
+      "cost": "medium",
+      "stability": "stable"
+    },
+    {
+      "id": "javascript",
+      "kind": "skills",
+      "category": "language",
+      "description": "JavaScript/TypeScript 生态 — TypeScript、JavaScript、NestJS。",
+      "paths": [
+        "skills/javascript/typescript-pro",
+        "skills/javascript/javascript-pro",
+        "skills/javascript/nestjs-expert"
+      ],
+      "targets": ["claude", "codex"],
+      "defaultInstall": false,
+      "cost": "medium",
+      "stability": "stable"
+    },
+    {
+      "id": "go-rust-cpp",
+      "kind": "skills",
+      "category": "language",
+      "description": "系统编程语言 — Go、Rust、C++。",
+      "paths": [
+        "skills/go-rust-cpp/golang-pro",
+        "skills/go-rust-cpp/rust-engineer",
+        "skills/go-rust-cpp/cpp-pro"
+      ],
+      "targets": ["claude", "codex"],
+      "defaultInstall": false,
+      "cost": "medium",
+      "stability": "stable"
+    },
+    {
+      "id": "dotnet",
+      "kind": "skills",
+      "category": "language",
+      "description": ".NET 生态 — C#、.NET Core。",
+      "paths": [
+        "skills/dotnet/csharp-developer",
+        "skills/dotnet/dotnet-core-expert"
+      ],
+      "targets": ["claude", "codex"],
+      "defaultInstall": false,
+      "cost": "medium",
+      "stability": "stable"
+    },
+    {
+      "id": "swift",
+      "kind": "skills",
+      "category": "language",
+      "description": "Swift 生态 — iOS/macOS 原生开发。",
+      "paths": [
+        "skills/swift/swift-expert"
+      ],
+      "targets": ["claude", "codex"],
+      "defaultInstall": false,
+      "cost": "light",
+      "stability": "stable"
+    },
+    {
+      "id": "php",
+      "kind": "skills",
+      "category": "language",
+      "description": "PHP 生态 — PHP、Laravel。",
+      "paths": [
+        "skills/php/php-pro",
+        "skills/php/laravel-specialist"
+      ],
+      "targets": ["claude", "codex"],
+      "defaultInstall": false,
+      "cost": "light",
+      "stability": "stable"
+    },
+    {
+      "id": "ruby",
+      "kind": "skills",
+      "category": "language",
+      "description": "Ruby 生态 — Ruby on Rails。",
+      "paths": [
+        "skills/ruby/rails-expert"
+      ],
+      "targets": ["claude", "codex"],
+      "defaultInstall": false,
+      "cost": "light",
+      "stability": "stable"
+    },
+    {
+      "id": "infra",
+      "kind": "skills",
+      "category": "stack",
+      "description": "基础设施 — DevOps、SRE、Cloud、K8s、Terraform、CLI、MCP、WebSocket、监控。",
+      "paths": [
+        "skills/infra/devops-engineer",
+        "skills/infra/sre-engineer",
+        "skills/infra/cloud-architect",
+        "skills/infra/kubernetes-specialist",
+        "skills/infra/terraform-engineer",
+        "skills/infra/cli-developer",
+        "skills/infra/mcp-developer",
+        "skills/infra/websocket-engineer",
+        "skills/infra/monitoring-expert"
+      ],
+      "targets": ["claude", "codex"],
+      "defaultInstall": false,
+      "cost": "medium",
+      "stability": "stable"
+    },
+    {
+      "id": "ai-ml",
+      "kind": "skills",
+      "category": "stack",
+      "description": "AI/ML 工程 — ML pipeline、Fine-tuning、RAG、Spark。",
+      "paths": [
+        "skills/ai-ml/ml-pipeline",
+        "skills/ai-ml/fine-tuning-expert",
+        "skills/ai-ml/rag-architect",
+        "skills/ai-ml/spark-engineer"
+      ],
+      "targets": ["claude", "codex"],
       "defaultInstall": false,
       "cost": "medium",
       "stability": "stable"
@@ -161,21 +263,19 @@
     {
       "id": "quality",
       "kind": "skills",
-      "description": "审查、测试、安全 skill — 任何交付前的门禁。",
+      "category": "process",
+      "description": "审查 / 测试 / 安全 skill — 任何交付前的门禁。",
       "paths": [
-        "skills/code-reviewer",
-        "skills/security-reviewer",
-        "skills/secure-code-guardian",
-        "skills/tdd-guide",
-        "skills/test-master",
-        "skills/senior-qa",
-        "skills/playwright-expert",
-        "skills/chaos-engineer"
+        "skills/quality/code-reviewer",
+        "skills/quality/security-reviewer",
+        "skills/quality/secure-code-guardian",
+        "skills/quality/tdd-guide",
+        "skills/quality/test-master",
+        "skills/quality/senior-qa",
+        "skills/quality/playwright-expert",
+        "skills/quality/chaos-engineer"
       ],
-      "targets": [
-        "claude",
-        "codex"
-      ],
+      "targets": ["claude", "codex"],
       "defaultInstall": true,
       "cost": "light",
       "stability": "stable"
@@ -198,9 +298,7 @@
         "init-architect",
         "get-current-datetime"
       ],
-      "targets": [
-        "claude"
-      ],
+      "targets": ["claude"],
       "defaultInstall": true,
       "cost": "light",
       "stability": "stable"
@@ -219,9 +317,7 @@
         "silent-failure-hunter",
         "type-design-analyzer"
       ],
-      "targets": [
-        "claude"
-      ],
+      "targets": ["claude"],
       "defaultInstall": false,
       "cost": "medium",
       "stability": "stable"
@@ -247,9 +343,7 @@
         "rust-build-resolver",
         "typescript-reviewer"
       ],
-      "targets": [
-        "claude"
-      ],
+      "targets": ["claude"],
       "defaultInstall": false,
       "cost": "heavy",
       "stability": "stable"
@@ -266,9 +360,7 @@
         "loop-operator",
         "pr-test-analyzer"
       ],
-      "targets": [
-        "claude"
-      ],
+      "targets": ["claude"],
       "defaultInstall": false,
       "cost": "medium",
       "stability": "stable"
@@ -288,9 +380,7 @@
         "opensource-sanitizer",
         "seo-specialist"
       ],
-      "targets": [
-        "claude"
-      ],
+      "targets": ["claude"],
       "defaultInstall": false,
       "cost": "light",
       "stability": "experimental"

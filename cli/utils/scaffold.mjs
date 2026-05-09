@@ -7,7 +7,7 @@
  */
 
 import { existsSync, mkdirSync, readdirSync, statSync, readFileSync, writeFileSync, copyFileSync } from 'node:fs'
-import { join, dirname } from 'node:path'
+import { join, dirname, basename } from 'node:path'
 
 // ─── 基础文件（必装） ───
 
@@ -117,6 +117,32 @@ export function getDefaultSkillModuleIds(pkgRoot) {
   return getSkillModules(pkgRoot)
     .filter(m => m.defaultInstall)
     .map(m => m.id)
+}
+
+/**
+ * 翻译旧版 skill 模块 id → 新版细粒度 id（基于 manifest.legacyModuleMap）
+ *
+ * 用于兼容历史 .aigroup.json — 老用户配置里写的是 'engineering-languages'
+ * 等聚合 id，新 manifest 已拆成 java/python/javascript/... 等细粒度 id，
+ * 通过本映射在加载时转译，避免老配置升级后丢失模块。
+ */
+export function migrateSkillModuleIds(pkgRoot, ids) {
+  if (!Array.isArray(ids)) return []
+  const manifest = loadManifest(pkgRoot)
+  const map = manifest.legacyModuleMap || {}
+  const validIds = new Set(getSkillModules(pkgRoot).map(m => m.id))
+  const out = new Set()
+  for (const id of ids) {
+    if (validIds.has(id)) {
+      out.add(id)
+    } else if (Array.isArray(map[id])) {
+      for (const newId of map[id]) {
+        if (validIds.has(newId)) out.add(newId)
+      }
+    }
+    // 若既不是有效 id 也无映射，静默忽略（避免 update 报错阻塞）
+  }
+  return [...out]
 }
 
 /**
@@ -351,15 +377,16 @@ export function scaffold(pkgRoot, projectRoot, options = {}) {
     let modCopied = 0
     for (const skillPath of mod.paths) {
       const src = join(pkgRoot, skillPath)
-      // skills/<name> → 根据 target 决定落盘位置
-      // Claude target：.claude/skills/<name>（Claude Code 自动加载）
-      // Codex target：skills/<name>（文件路径手动加载）
+      // 源端按分类目录组织（skills/<category>/<name>），落盘端扁平化以保留原 skill ID
+      // Claude target：.claude/skills/<name>/SKILL.md（自动加载，目录名即 skill ID）
+      // Codex target：skills/<name>/SKILL.md（文件路径手动加载，保持扁平兼容旧引用）
+      const skillName = basename(skillPath)
       if (targets.includes('claude')) {
-        const claudeDest = join(projectRoot, skillPath.replace(/^skills\//, '.claude/skills/'))
+        const claudeDest = join(projectRoot, '.claude/skills', skillName)
         modCopied += copyDirRecursive(src, claudeDest, { overwrite })
       }
       if (targets.includes('codex')) {
-        const codexDest = join(projectRoot, skillPath)
+        const codexDest = join(projectRoot, 'skills', skillName)
         modCopied += copyDirRecursive(src, codexDest, { overwrite })
       }
     }
@@ -381,7 +408,9 @@ export function scaffoldUpdate(pkgRoot, projectRoot) {
   let totalCopied = 0
 
   const config = readConfig(projectRoot)
-  const modules = config?.modules || getDefaultSkillModuleIds(pkgRoot)
+  const rawModules = config?.modules || getDefaultSkillModuleIds(pkgRoot)
+  // 翻译旧版聚合 id → 新版细粒度 id，兼容历史 .aigroup.json
+  const modules = migrateSkillModuleIds(pkgRoot, rawModules)
   const targets = config?.targets || ['claude', 'codex']
 
   // 传感器
@@ -441,12 +470,13 @@ export function scaffoldUpdate(pkgRoot, projectRoot) {
     let modCopied = 0
     for (const skillPath of mod.paths) {
       const src = join(pkgRoot, skillPath)
+      const skillName = basename(skillPath)
       if (targets.includes('claude')) {
-        const claudeDest = join(projectRoot, skillPath.replace(/^skills\//, '.claude/skills/'))
+        const claudeDest = join(projectRoot, '.claude/skills', skillName)
         modCopied += copyDirRecursive(src, claudeDest, { overwrite: true })
       }
       if (targets.includes('codex')) {
-        modCopied += copyDirRecursive(src, join(projectRoot, skillPath), { overwrite: true })
+        modCopied += copyDirRecursive(src, join(projectRoot, 'skills', skillName), { overwrite: true })
       }
     }
     sections.push({ name: `skill 模块: ${modId}`, count: modCopied })

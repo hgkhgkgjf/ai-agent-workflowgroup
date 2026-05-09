@@ -71,12 +71,26 @@ export async function init(ctx) {
     selectedModules = getDefaultSkillModuleIds(PKG_ROOT)
     log.info(`使用默认 skill 模块：${selectedModules.join(', ')}`)
   } else {
-    const choices = allSkillModules.map(mod => ({
-      name: `${mod.id} — ${mod.description}`,
-      value: mod.id,
-      description: `路径数: ${mod.paths.length} · 成本: ${mod.cost || 'n/a'}`,
-      checked: mod.defaultInstall === true,
-    }))
+    // 按 category 分组排序：流程 (process) → 栈 (stack) → 语言 (language)
+    const CATEGORY_ORDER = { process: 0, stack: 1, language: 2 }
+    const CATEGORY_LABEL = { process: '流程', stack: '栈', language: '语言' }
+    const sorted = [...allSkillModules].sort((a, b) => {
+      const ca = CATEGORY_ORDER[a.category] ?? 99
+      const cb = CATEGORY_ORDER[b.category] ?? 99
+      return ca - cb || a.id.localeCompare(b.id)
+    })
+
+    log.info('skill 按分类细粒度暴露——可独立勾选（如只装 java + quality）')
+    const choices = sorted.map(mod => {
+      const tag = CATEGORY_LABEL[mod.category] || mod.category || ''
+      const tagPart = tag ? `[${tag}] ` : ''
+      return {
+        name: `${tagPart}${mod.id} — ${mod.description}`,
+        value: mod.id,
+        description: `${mod.paths.length} 个 skill · 成本: ${mod.cost || 'n/a'}`,
+        checked: mod.defaultInstall === true,
+      }
+    })
 
     selectedModules = await multiSelect('选择要安装的 skill 模块', choices)
 

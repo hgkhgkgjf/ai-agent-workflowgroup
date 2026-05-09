@@ -14,7 +14,7 @@
 
 ## Skills 加载
 
-Skills 主源位于 `skills/<name>/SKILL.md`，跨平台共享。Codex 端**按任务意图加载文件路径**——不像 Claude Code 那样自动发现。
+Skills 在源仓库按分类组织（`skills/<category>/<name>/SKILL.md`），`aigroup init` 安装到 Codex 项目时扁平化为 `skills/<name>/SKILL.md`。Codex 端**按任务意图加载文件路径**——不像 Claude Code 那样自动发现。下方路径为安装后路径。
 
 常用入口：
 

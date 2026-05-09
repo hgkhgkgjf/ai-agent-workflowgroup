@@ -13,7 +13,7 @@
 ## Context Hygiene
 
 - 根 `CLAUDE.md` / `AGENTS.md` 只做导航，不复制长篇规则。
-- 完整规则放在 `docs/rules/`，执行方法放在 `skills/<name>/SKILL.md`。
+- 完整规则放在 `docs/rules/`，执行方法放在 `skills/<category>/<name>/SKILL.md`。
 - Agent prompt 只注入任务目标、文件路径、skill 路径、验收条件和验证命令。
 - 不在 prompt 中重复 agent 身份、人格、长背景；这些属于 agent 定义文件。
 
