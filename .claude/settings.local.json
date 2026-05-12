@@ -143,7 +143,13 @@
       "Bash(grep -E '^\\(writing-plans|systematic-debugging|verification-before-completion|finishing-a-development-branch|brainstorming|executing-plans|receiving-code-review|requesting-code-review|using-git-worktrees|writing-skills\\)$')",
       "Bash(grep -E '^\\(brainstorming|executing-plans|finishing-a-development-branch|receiving-code-review|requesting-code-review|systematic-debugging|using-git-worktrees|verification-before-completion|writing-plans|writing-skills\\)$')",
       "Bash(grep -E '^\\(package\\\\.json|\\\\.npmignore|\\\\.npmrc\\)$')",
-      "Bash(npm config *)"
+      "Bash(npm config *)",
+      "Bash(git diff *)",
+      "Bash(awk '{print $1}')",
+      "Bash(curl -fsSL https://raw.githubusercontent.com/catlog22/Claude-Code-Workflow/main/README_CN.md -o /tmp/ccw-readme.md)",
+      "Bash(curl -fsSL \"https://api.github.com/repos/catlog22/Claude-Code-Workflow/contents/.claude/skills\")",
+      "Bash(curl -fsSL \"https://raw.githubusercontent.com/catlog22/Claude-Code-Workflow/main/.claude/skills/workflow-lite-plan/SKILL.md\")",
+      "Bash(echo \"---exit: $?---\")"
     ]
   }
 }
