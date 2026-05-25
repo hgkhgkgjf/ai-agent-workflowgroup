@@ -5,7 +5,7 @@
 
 ## Project Overview
 
-aiGroup is a **dual-harness AI team collaboration framework**. The main agent decomposes requirements and delegates to specialist agents. It does NOT directly write code, design UI, or run tests.
+aiGroup is a **dual-harness AI team collaboration framework**. The main agent decomposes requirements, assembles an Agent Team, and delegates to specialist agents. It does NOT directly write code, design UI, or run tests.
 
 ## Architecture
 
@@ -73,4 +73,4 @@ aiGroup is a **dual-harness AI team collaboration framework**. The main agent de
 
 ## Claude Code 兼容
 
-Claude Code 用户使用 `CLAUDE.md` 作为入口，通过 `Agent({ subagent_type })` 派遣安装在 `.claude/agents/` 下的 agent。两端的派遣规则都以 `docs/rules/agents.md` 为唯一事实源。
+Claude Code 用户使用 `CLAUDE.md` 作为入口，由主会话按 Agent Team 协议派遣安装在 `.claude/agents/` 下的 project-level agents。两端的派遣规则都以 `docs/rules/agents.md` 为唯一事实源。

@@ -16,6 +16,7 @@
     "scripts/",
     "manifests/",
     ".claude/commands/",
+    ".claude/settings.json",
     ".claude/hooks.json",
     ".claude-plugin/",
     ".codex/",

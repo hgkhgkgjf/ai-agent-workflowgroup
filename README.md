@@ -5,15 +5,15 @@
 [![Claude Code](https://img.shields.io/badge/Claude-Code-purple.svg?style=flat&colorA=080f12&colorB=1fa669)](https://claude.ai/code)
 [![Codex](https://img.shields.io/badge/Codex-CLI-blue.svg?style=flat&colorA=080f12&colorB=1fa669)](https://developers.openai.com/codex)
 
-> **双端 AI 团队协作框架**：主会话接收需求，按任务类型派遣**专项子代理**执行。
+> **双端 AI 团队协作框架**：主会话接收需求，先组建 **Agent Team**，再按任务类型派遣专项 agent 执行。
 > Claude Code 与 Codex 共享同一份 agent / skill / docs 主源，各自薄适配层接入。
-> 重场景走 phase 心智模型（按需裁剪）；轻量任务走 `/plan`、`/review`、`/fix-build`、`/tdd` 单 agent 流程。
+> 重场景走 phase 心智模型（按需裁剪）；轻量任务走 `/plan`、`/review`、`/fix-build`、`/tdd` 的最小团队流程。
 
 ## 双端兼容
 
 | Harness | 入口 | Agent 启用位置 | 启动 |
 |---------|------|----------------|------|
-| Claude Code | `CLAUDE.md` | `.claude/agents/<name>.md`（init 时按需选） | `claude` |
+| Claude Code | `CLAUDE.md` | `.claude/agents/<name>.md`（init 时按需选，按 Agent Team 协议组队） | `claude` |
 | Codex CLI | `AGENTS.md` | `.codex/agents/<persona>.toml`（3 个原生 persona） | `codex` |
 
 两端共享 `agents/`（源池）/ `skills/` / `docs/` / `scripts/` / `.orchestration/<session>/`。派遣规则单一事实源：`docs/rules/agents.md`。
@@ -62,9 +62,9 @@ aig help              # 帮助
 
 > `aig` 是 `aigroup` 的短别名。npx 用户用 `npx aigroup-workflow <命令>`。
 
-## Agent 派遣
+## Agent Team 派遣
 
-agent 体系**两端共享一份**——单一 manifest 驱动的源池 + 选装机制。
+agent 体系**两端共享一份**——单一 manifest 驱动的源池 + 选装机制。Claude Code 端通过 `.claude/settings.json` 启用 `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`，由主会话担任 Team Lead，按 `docs/rules/agents.md` 组队、spawn teammates、并行协作、合并结论。Agent Teams 需要 Claude Code v2.1.32+；低版本按同一拓扑回退为 subagent 派遣。
 
 ### 默认装的 12 个 agent（agents-core）
 
@@ -102,15 +102,15 @@ agent 体系**两端共享一份**——单一 manifest 驱动的源池 + 选装
 
 ```
 你: 帮我审一下登录模块
-→ Claude Code：派遣 code-reviewer + security-reviewer 并行
+→ Claude Code：启动 Review Team，派遣 code-reviewer + security-reviewer 并行
 → Codex：/agent reviewer，加载 skills/security-reviewer/SKILL.md
 
 你: build 挂了
-→ Claude Code：派遣 build-error-resolver
+→ Claude Code：启动 Build Recovery Team，派遣 build-error-resolver → code-reviewer
 → Codex：主对话 + 加载 skills/systematic-debugging/SKILL.md
 
 你: 帮我规划用户认证系统
-→ Claude Code：planner → architect → tdd-guide → code-reviewer
+→ Claude Code：启动 Feature Team，planner → architect → tdd-guide → code-reviewer
 → Codex：主对话规划，必要时 /agent reviewer 审查
 ```
 
@@ -129,11 +129,11 @@ agent 体系**两端共享一份**——单一 manifest 驱动的源池 + 选装
 /workflow-start <任务名>      # ≥2 worker 协作的完整流程
 /init-project <名称>          # 项目 AI 上下文初始化
 
-# 轻量场景（单 agent，不建 session）
-/plan <任务>                  # 派 planner
-/review                       # 派 code-reviewer（双阶段）
-/fix-build                    # 派 build-error-resolver
-/tdd <功能>                   # 派 tdd-guide 走 Red→Green→Refactor
+# 轻量场景（最小团队，不建 session）
+/plan <任务>                  # Planning Team
+/review                       # Review Team（双阶段）
+/fix-build                    # Build Recovery Team
+/tdd <功能>                   # Delivery Team：Red→Green→Refactor
 
 # 工具
 /git-commit                   # 智能 Git 提交（Conventional Commits）
@@ -178,7 +178,7 @@ agent 体系**两端共享一份**——单一 manifest 驱动的源池 + 选装
 - **测试覆盖** — `tdd-guide`（审"该有但没有"）
 - **一致性** — `architect`（审是否破坏架构约束）
 
-可并行：`code-reviewer` + `security-reviewer`、`doc-updater` + `tdd-guide`、多个 `code-explorer` 跑不同模块。
+可并行：`code-reviewer` + `security-reviewer`、`doc-updater` + `tdd-guide`、多个 explorer 跑不同模块。teammate 不创建嵌套 team；扩队由 Team Lead 完成。
 
 ## Skill 体系
 
@@ -204,7 +204,7 @@ skills/<name>/SKILL.md       # 扁平结构，命名小写 + 短横线
 
 ## 协调协议（`.orchestration/`）
 
-主会话是唯一的 orchestrator/writer；每个 subagent 都是只产文本的 worker。
+主会话是唯一的 Team Lead / orchestrator；每个 teammate 是有边界的 specialist worker。
 
 ```
 .orchestration/

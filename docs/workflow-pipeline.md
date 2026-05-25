@@ -27,8 +27,8 @@
 | 3 | 方案设计 | `brainstorming`（终段：spec 锁定） | `architect` | `architect/handoff.json`（ADR 格式） | 至少 2 个候选方案 + 推荐理由 |
 | 4 | 任务拆解 | `writing-plans` | `planner` | `planner/handoff.json` | 3–7 个阶段，每个含 agent / 验证命令 |
 | 4→5 桥 | 隔离工作区 | `using-git-worktrees` | 主会话执行 git | session `README.md` 记录 worktree 路径 | worktree 创建、依赖装好、测试基线通过 |
-| 5 | 实施开发 | subagent 派遣（推荐）/ `executing-plans` | `tdd-guide`（TDD 路径）/ 语言专项 reviewer | `<agent>/handoff.json` 或直接改代码 | 改动文件清单 + 验证证据（typecheck / test） |
-| 6a | 审查发起 | `requesting-code-review` | 主会话向 `code-reviewer` 派遣（敏感场景加 `security-reviewer`、关键路径加 `e2e-runner`、按栈加语言专项 reviewer） | `code-reviewer/request.md` | 审查范围 / 验收点 / 关注项清单完整 |
+| 5 | 实施开发 | Agent Team 派遣（推荐）/ `executing-plans` | `tdd-guide`（TDD 路径）/ 语言专项 agent | `<agent>/handoff.json` 或直接改代码 | 改动文件清单 + 验证证据（typecheck / test） |
+| 6a | 审查发起 | `requesting-code-review` | Review Team：`code-reviewer` + 风险触发的 `security-reviewer` / `e2e-runner` / 语言专项 reviewer | `code-reviewer/request.md` | 审查范围 / 验收点 / 关注项清单完整 |
 | 6b | 审查反馈处理 | `receiving-code-review` | 主会话逐条决议 | `code-reviewer/handoff.json`（含决议） | 每条反馈有"采纳/反驳/记录"决议且证据闭环（`handoff.stages.spec` ✓ `handoff.stages.quality` ✓） |
 | 7 | 文档更新 | （无强制 skill） | `doc-updater` 或主会话直接改 | 直接改 `docs/`；session `README.md` 留笔记 | docs/ARCHITECTURE / docs/PROJECT_CONTEXT / API 文档已同步 |
 | 8 | 分支收尾 | `finishing-a-development-branch` | 主会话 | session `README.md` 总结 | 集成 / PR / 归档 |
@@ -65,12 +65,12 @@
 | Checkpoint | 触发位置 | 暂停原因 | orchestrator 行为 |
 |-----------|---------|---------|-----------------|
 | 计划批准 | phase 4 末（`writing-plans` 产出后） | 计划是后续所有 phase 的契约，错误会扩散到实施和审查 | 暂停，向用户展示 plan 摘要，等待"批准 / 修订"回应 |
-| 实施模式选择 | phase 5 起点 | subagent 派遣 vs `executing-plans` 影响代价、速度、上下文清洁度 | 暂停 1 次询问；用户未指定时默认 subagent 派遣并明确告知 |
+| 实施模式选择 | phase 5 起点 | Agent Team 派遣 vs `executing-plans` 影响代价、速度、上下文清洁度 | 暂停 1 次询问；用户未指定时默认 Agent Team 派遣并明确告知 |
 | 集成方式选择 | phase 8（`finishing-a-development-branch` Step 3） | merge / PR / keep / discard 是不可逆的对外操作 | 暂停展示 4 选项，不替用户选 |
 | Discard 确认 | phase 8 选项 4 | 删除分支 + worktree 不可恢复 | 必须用户键入 `discard` 字面量；其他输入一律视为放弃 |
 | 审查反馈分歧 | phase 6b（`receiving-code-review` 中） | reviewer 与实施 agent 对同一问题给出冲突结论时 | 暂停，把分歧摘要呈给用户决议 |
 
-**自动决策**（不打断用户）：phase 间流转、handoff 文件生成、`status.json` 推进、worktree 路径分配、`session.cjs` 状态写入、phase 内的子 agent 派遣。
+**自动决策**（不打断用户）：phase 间流转、handoff 文件生成、`status.json` 推进、worktree 路径分配、`session.cjs` 状态写入、phase 内的 Agent Team 派遣。
 
 ## Session 存在条件
 
@@ -81,7 +81,7 @@
 - 有明确验收标准、需追溯证据链
 - ≥2 个 worker 产生 handoff
 
-不满足以上条件 → 不建 session。直接走主对话或单 agent 轻量命令（`/plan` / `/review` / `/fix-build` / `/tdd`）。
+不满足以上条件 → 不建 session。直接走主对话或最小团队轻量命令（`/plan` / `/review` / `/fix-build` / `/tdd`）。
 
 主会话识别出复杂任务时，应**建议**启动 session 而非强制。
 

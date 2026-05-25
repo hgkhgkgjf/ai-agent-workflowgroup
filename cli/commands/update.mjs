@@ -31,7 +31,7 @@ export async function update(ctx) {
   log.step('更新范围')
   log.dim('将覆盖更新:')
   log.dim('  • scripts/harness/*（传感器脚本）')
-  log.dim('  • 已启用 harness 的适配层（.claude/ 或 .codex/）')
+  log.dim('  • 已启用 harness 的适配层（.claude/ 或 .codex/，settings.json 仅合并必要项）')
   log.dim('  • 已选模块下的 skill 目录')
   log.dim('  • docs/（主源文档）+ manifests/')
   log.dim('')

@@ -73,6 +73,8 @@ export const CLAUDE_CORE_FILES = [
   '.claude-plugin/plugin.json',
 ]
 
+const CLAUDE_SETTINGS_FILE = '.claude/settings.json'
+
 /** Codex 适配层（config + 3 个 Codex 原生 persona TOML + plugin 元数据 + 入口） */
 export const CODEX_CORE_FILES = [
   'AGENTS.md',
@@ -240,6 +242,55 @@ export function processTemplate(filePath, variables) {
   writeFileSync(filePath, content, 'utf-8')
 }
 
+function readJsonMaybe(path) {
+  if (!existsSync(path)) return null
+  try {
+    return JSON.parse(readFileSync(path, 'utf-8'))
+  } catch {
+    return null
+  }
+}
+
+function mergeUnique(first = [], second = []) {
+  return [...new Set([...first, ...second])]
+}
+
+/**
+ * Merge Claude settings instead of overwriting user permissions.
+ * This enables experimental Agent Teams while preserving project-specific settings.
+ */
+export function mergeClaudeSettings(pkgRoot, projectRoot) {
+  const src = join(pkgRoot, CLAUDE_SETTINGS_FILE)
+  const dest = join(projectRoot, CLAUDE_SETTINGS_FILE)
+  const defaults = readJsonMaybe(src)
+  if (!defaults) return false
+
+  const existing = readJsonMaybe(dest) || {}
+  const merged = {
+    ...defaults,
+    ...existing,
+    env: {
+      ...(defaults.env || {}),
+      ...(existing.env || {}),
+      CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS: '1',
+    },
+    permissions: {
+      ...(defaults.permissions || {}),
+      ...(existing.permissions || {}),
+      allow: mergeUnique(defaults.permissions?.allow, existing.permissions?.allow),
+      deny: mergeUnique(defaults.permissions?.deny, existing.permissions?.deny),
+    },
+  }
+
+  if (!existing.teammateMode && defaults.teammateMode) {
+    merged.teammateMode = defaults.teammateMode
+  }
+
+  mkdirSync(dirname(dest), { recursive: true })
+  writeFileSync(dest, JSON.stringify(merged, null, 2) + '\n', 'utf-8')
+  return true
+}
+
 // ─── 配置管理 ───
 
 const CONFIG_FILE = '.aigroup.json'
@@ -319,6 +370,7 @@ export function scaffold(pkgRoot, projectRoot, options = {}) {
       const ok = copySingleFile(join(pkgRoot, file), join(projectRoot, file), overwrite)
       if (ok) claudeCopied++
     }
+    if (mergeClaudeSettings(pkgRoot, projectRoot)) claudeCopied++
     sections.push({ name: 'Claude Code 核心（commands + hooks + plugin）', count: claudeCopied })
     totalCopied += claudeCopied
 
@@ -429,6 +481,7 @@ export function scaffoldUpdate(pkgRoot, projectRoot) {
       const ok = copySingleFile(join(pkgRoot, file), join(projectRoot, file), true)
       if (ok) claudeCopied++
     }
+    if (mergeClaudeSettings(pkgRoot, projectRoot)) claudeCopied++
     // 已安装的 agent 模块按 config 覆盖更新
     const agentModules = config?.agentModules || getDefaultAgentModuleIds(pkgRoot)
     const allAgentModules = getAgentModules(pkgRoot)

@@ -52,18 +52,23 @@ argument-hint: <项目摘要或名称>
 
 ## Phases
 
-### 1. 时间戳
+### 1. Initialization Team
+
+主会话声明 Initialization Team：
+
+- `get-current-datetime`：获取当前 UTC 时间戳。
+- `init-architect`：扫描项目并生成 AI 上下文文档。
+
+### 2. 时间戳
 
 派遣 `get-current-datetime` 获取当前 UTC 时间戳。
 
-### 2. 调度 init-architect
+### 3. 调度 init-architect
 
 ```
-Agent({
-  subagent_type: "init-architect",
-  project_summary: $ARGUMENTS,
-  current_timestamp: <step 1>
-})
+Create an agent team and spawn init-architect using the `init-architect` agent type with:
+- project_summary: $ARGUMENTS
+- current_timestamp: <step 2>
 ```
 
 `init-architect` 负责：
@@ -75,7 +80,7 @@ Agent({
 - 写入 / 更新根 `CLAUDE.md` 为**纯导航形态**——若已存在内容是项目内容（非导航）则保留不动，新内容并入 `docs/PROJECT_CONTEXT.md`
 - 写入 `.claude/index.json`（扫描元数据 + 覆盖率 + 缺口清单）
 
-### 3. 摘要回报
+### 4. 摘要回报
 
 从 agent 返回体中提取并打印：
 
