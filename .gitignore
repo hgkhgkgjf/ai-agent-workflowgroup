@@ -19,3 +19,6 @@ everything-claude-code/
 **/__pycache__/
 *.pyc
 *.pyo
+
+# 本地数据库/缓存服务凭据
+.env.mysql-redis

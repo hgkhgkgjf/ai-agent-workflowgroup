@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ai-agent-workflowGroup.iml" filepath="$PROJECT_DIR$/.idea/ai-agent-workflowGroup.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../polysport/polynba_server/.idea/polynba_server.iml" filepath="$PROJECT_DIR$/../polysport/polynba_server/.idea/polynba_server.iml" />
     </modules>
   </component>
 </project>

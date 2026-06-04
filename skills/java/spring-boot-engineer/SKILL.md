@@ -1,12 +1,12 @@
 ---
 name: spring-boot-engineer
-description: Generates Spring Boot 3.x configurations, creates REST controllers, implements Spring Security 6 authentication flows, sets up Spring Data JPA repositories, and configures reactive WebFlux endpoints. Use when building Spring Boot 3.x applications, microservices, or reactive Java applications; invoke for Spring Data JPA, Spring Security 6, WebFlux, Spring Cloud integration, Java REST API design, or Microservices Java architecture.
+description: Generates Spring Boot 3.x configurations, creates REST controllers, implements Spring Security 6 authentication flows, sets up Spring Data JPA or MyBatis-Plus data access, and configures reactive WebFlux endpoints. Use when building Spring Boot 3.x applications, microservices, or reactive Java applications; invoke for Spring Data JPA, MyBatis-Plus, Spring Security 6, WebFlux, Spring Cloud integration, Java REST API design, or Microservices Java architecture.
 license: MIT
 metadata:
   author: https://github.com/Jeffallan
   version: "1.1.0"
   domain: backend
-  triggers: Spring Boot, Spring Framework, Spring Cloud, Spring Security, Spring Data JPA, Spring WebFlux, Microservices Java, Java REST API, Reactive Java
+  triggers: Spring Boot, Spring Framework, Spring Cloud, Spring Security, Spring Data JPA, MyBatis-Plus, Spring WebFlux, Microservices Java, Java REST API, Reactive Java
   role: specialist
   scope: implementation
   output-format: code
@@ -32,6 +32,7 @@ Load detailed guidance based on context:
 |-------|-----------|-----------|
 | Web Layer | `references/web.md` | Controllers, REST APIs, validation, exception handling |
 | Data Access | `references/data.md` | Spring Data JPA, repositories, transactions, projections |
+| MyBatis-Plus | `references/mybatis-plus.md` | MyBatis-Plus, BaseMapper, XML mapper queries, wrappers |
 | Security | `references/security.md` | Spring Security 6, OAuth2, JWT, method security |
 | Cloud Native | `references/cloud.md` | Spring Cloud, Config, Discovery, Gateway, resilience |
 | Testing | `references/testing.md` | @SpringBootTest, MockMvc, Testcontainers, test slices |
